@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BlackmagicDesign><Plugin><Id>com.zeitfield.studio.plugin</Id><Name>Zeitfield Studio Plugin</Name><Version>0.1.2</Version><Description>OpenAI assistant and direct Kling 3.0 video generation</Description><FilePath>main.cjs</FilePath></Plugin></BlackmagicDesign>
