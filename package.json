@@ -1,6 +1,6 @@
 {
   "name": "zeitfield-studio-plugin",
-  "version": "0.1.2",
+  "version": "0.1.7",
   "updatesRepository": "Lionardo/zeitfield-studio-plugin-releases",
   "main": "main.cjs"
 }

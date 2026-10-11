@@ -28,10 +28,10 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 
 // src/main/main.ts
 var import_electron = require("electron");
-var import_node_fs7 = __toESM(require("node:fs"));
-var import_node_path5 = __toESM(require("node:path"));
+var import_node_fs8 = __toESM(require("node:fs"));
+var import_node_path6 = __toESM(require("node:path"));
 var import_node_os = __toESM(require("node:os"));
-var import_node_crypto5 = require("node:crypto");
+var import_node_crypto6 = require("node:crypto");
 var import_node_url = require("node:url");
 
 // node_modules/zod/v4/classic/external.js
@@ -850,10 +850,10 @@ function mergeDefs(...defs) {
 function cloneDef(schema) {
   return mergeDefs(schema._zod.def);
 }
-function getElementAtPath(obj, path6) {
-  if (!path6)
+function getElementAtPath(obj, path7) {
+  if (!path7)
     return obj;
-  return path6.reduce((acc, key) => acc?.[key], obj);
+  return path7.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -1193,11 +1193,11 @@ function explicitlyAborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path6, issues) {
+function prefixIssues(path7, issues) {
   return issues.map((iss) => {
     var _a3;
     (_a3 = iss).path ?? (_a3.path = []);
-    iss.path.unshift(path6);
+    iss.path.unshift(path7);
     return iss;
   });
 }
@@ -1647,16 +1647,16 @@ function flattenError(error62, mapper = (issue2) => issue2.message) {
 }
 function formatError(error62, mapper = (issue2) => issue2.message) {
   const fieldErrors = { _errors: [] };
-  const processError = (error63, path6 = []) => {
+  const processError = (error63, path7 = []) => {
     for (const issue2 of error63.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path6, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path7, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path7, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path7, ...issue2.path]);
       } else {
-        const fullpath = [...path6, ...issue2.path];
+        const fullpath = [...path7, ...issue2.path];
         if (fullpath.length === 0) {
           fieldErrors._errors.push(mapper(issue2));
         } else {
@@ -1695,17 +1695,17 @@ function formatError(error62, mapper = (issue2) => issue2.message) {
 }
 function treeifyError(error62, mapper = (issue2) => issue2.message) {
   const result = { errors: [] };
-  const processError = (error63, path6 = []) => {
+  const processError = (error63, path7 = []) => {
     var _a3;
     for (const issue2 of error63.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path6, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path7, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path7, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path6, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path7, ...issue2.path]);
       } else {
-        const fullpath = [...path6, ...issue2.path];
+        const fullpath = [...path7, ...issue2.path];
         if (fullpath.length === 0) {
           result.errors.push(mapper(issue2));
           continue;
@@ -1744,8 +1744,8 @@ function treeifyError(error62, mapper = (issue2) => issue2.message) {
 }
 function toDotPath(_path) {
   const segs = [];
-  const path6 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
-  for (const seg of path6) {
+  const path7 = _path.map((seg) => typeof seg === "object" ? seg.key : seg);
+  for (const seg of path7) {
     if (typeof seg === "number")
       segs.push(`[${seg}]`);
     else if (typeof seg === "symbol")
@@ -18847,13 +18847,13 @@ function resolveRef(ref, ctx) {
   if (!ref.startsWith("#")) {
     throw new Error("External $ref is not supported, only local refs (#/...) are allowed");
   }
-  const path6 = ref.slice(1).split("/").filter(Boolean);
-  if (path6.length === 0) {
+  const path7 = ref.slice(1).split("/").filter(Boolean);
+  if (path7.length === 0) {
     return ctx.rootSchema;
   }
   const defsKey = ctx.version === "draft-2020-12" ? "$defs" : "definitions";
-  if (path6[0] === defsKey) {
-    const key = path6[1] === void 0 ? void 0 : decodeJSONPointerSegment(path6[1]);
+  if (path7[0] === defsKey) {
+    const key = path7[1] === void 0 ? void 0 : decodeJSONPointerSegment(path7[1]);
     if (!key || !ctx.defs[key]) {
       throw new Error(`Reference not found: ${ref}`);
     }
@@ -20491,6 +20491,25 @@ var ResolveAdapter = class {
     this.diagnostic("Project and timeline obtained");
     return { project, timeline };
   }
+  async saveForUpdate() {
+    const r = await this.get();
+    const manager = await r.GetProjectManager();
+    const project = await manager.GetCurrentProject();
+    if (!project) return;
+    if (await project.IsRenderingInProgress())
+      throw new Error("Finish the Resolve render before installing an update.");
+    if (!await manager.SaveProject())
+      throw new Error(
+        "Resolve could not save your project. Save it manually before updating."
+      );
+  }
+  async quitForUpdate() {
+    const r = await this.get();
+    if (await r.Quit() === false)
+      throw new Error(
+        "Resolve declined to quit. Complete its quit dialog before updating."
+      );
+  }
   async context() {
     let timeout;
     try {
@@ -20985,6 +21004,118 @@ var Updates = class {
   }
 };
 
+// src/main/update-network.ts
+var fetchUpdate = (input2, init) => globalThis.fetch(input2, init);
+
+// src/main/update-install.ts
+var import_node_child_process = require("node:child_process");
+var import_node_util = require("node:util");
+var import_node_crypto5 = require("node:crypto");
+var import_node_fs7 = __toESM(require("node:fs"));
+var import_node_path5 = __toESM(require("node:path"));
+async function resolveIsRunning() {
+  try {
+    await (0, import_node_util.promisify)(import_node_child_process.execFile)(
+      "/usr/bin/pgrep",
+      ["-x", "Resolve|DaVinci Resolve"],
+      { timeout: 3e3 }
+    );
+    return true;
+  } catch (error62) {
+    if (error62.code === 1) return false;
+    throw new Error(
+      "Could not check whether Resolve has closed. Quit Resolve and install the downloaded package manually."
+    );
+  }
+}
+async function waitForExit(running, timeoutMs = 9e4, pause = () => new Promise((resolve2) => setTimeout(resolve2, 500))) {
+  const deadline = Date.now() + timeoutMs;
+  while (await running()) {
+    if (Date.now() >= deadline)
+      throw new Error(
+        "Resolve is still open. Complete its save or quit dialog, then try updating again. Nothing was installed."
+      );
+    await pause();
+  }
+}
+async function startInstallerHandoff(file2) {
+  const checksum = (0, import_node_crypto5.createHash)("sha256").update(import_node_fs7.default.readFileSync(file2)).digest("hex");
+  const request = JSON.stringify({ file: file2, checksum, parentPid: process.pid });
+  const env = { ...process.env, ELECTRON_RUN_AS_NODE: "" };
+  delete env.GITHUB_TOKEN;
+  const child = (0, import_node_child_process.spawn)(
+    process.execPath,
+    [import_node_path5.default.join(__dirname, "installer-handoff.cjs"), request],
+    {
+      detached: true,
+      stdio: ["ignore", "ignore", "ignore", "ipc"],
+      env
+    }
+  );
+  const cancel = () => {
+    child.kill();
+  };
+  try {
+    await new Promise((resolve2, reject) => {
+      const timeout = setTimeout(
+        () => reject(
+          new Error(
+            "The update helper did not start. Resolve was left open."
+          )
+        ),
+        1e4
+      );
+      const fail = () => {
+        clearTimeout(timeout);
+        reject(
+          new Error(
+            "The update helper could not start. Resolve was left open."
+          )
+        );
+      };
+      child.once("error", fail);
+      child.once("exit", fail);
+      child.once("message", (message) => {
+        clearTimeout(timeout);
+        if (message !== "ready") {
+          fail();
+          return;
+        }
+        child.removeListener("error", fail);
+        child.removeListener("exit", fail);
+        resolve2();
+      });
+    });
+    child.disconnect();
+    child.unref();
+    return { cancel };
+  } catch (error62) {
+    cancel();
+    throw error62;
+  }
+}
+async function installAfterClosingResolve(actions) {
+  if (!await actions.confirm()) return;
+  await actions.download();
+  await actions.save();
+  const helper = await actions.handoff();
+  try {
+    try {
+      await actions.quitResolve();
+    } catch {
+      if (await actions.running())
+        throw new Error(
+          "Resolve could not quit. Close it normally and try updating again. Nothing was installed."
+        );
+    }
+    await (actions.wait || waitForExit)(actions.running);
+    actions.quitPlugin();
+  } catch (error62) {
+    helper.cancel();
+    throw error62;
+  }
+}
+
 // src/main/main.ts
 import_electron.protocol.registerSchemesAsPrivileged([
   {
@@ -20998,7 +21129,7 @@ import_electron.protocol.registerSchemesAsPrivileged([
   }
 ]);
 import_electron.app.setName("Zeitfield Studio");
-import_electron.app.setPath("userData", import_node_path5.default.join(import_electron.app.getPath("appData"), "Zeitfield Studio"));
+import_electron.app.setPath("userData", import_node_path6.default.join(import_electron.app.getPath("appData"), "Zeitfield Studio"));
 var window;
 var resolve;
 var store;
@@ -21072,7 +21203,7 @@ async function refreshResolveContext() {
 }
 function handle(name, schema, fn) {
   import_electron.ipcMain.handle("zeitfield:" + name, async (event, input2) => {
-    if (event.sender !== window.webContents || event.senderFrame?.url !== (0, import_node_url.pathToFileURL)(import_node_path5.default.join(__dirname, "ui/index.html")).href)
+    if (event.sender !== window.webContents || event.senderFrame?.url !== (0, import_node_url.pathToFileURL)(import_node_path6.default.join(__dirname, "ui/index.html")).href)
       throw new Error("Untrusted plugin request.");
     if (installingUpdate && name !== "snapshot")
       throw new Error("Wait for the update to finish preparing.");
@@ -21080,23 +21211,23 @@ function handle(name, schema, fn) {
   });
 }
 async function addAttachment(file2, name) {
-  const stat = import_node_fs7.default.statSync(file2);
+  const stat = import_node_fs8.default.statSync(file2);
   if (!stat.isFile() || stat.size > 50 * 1024 * 1024)
     throw new Error("Choose an image file under 50 MB.");
-  const buffer = import_node_fs7.default.readFileSync(file2);
+  const buffer = import_node_fs8.default.readFileSync(file2);
   const mime = buffer.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) ? "image/png" : buffer[0] === 255 && buffer[1] === 216 ? "image/jpeg" : "";
   const image = import_electron.nativeImage.createFromBuffer(buffer);
   const { width, height } = image.getSize();
   validateImage(mime, stat.size, width, height);
-  const id = (0, import_node_crypto5.randomUUID)();
-  const folder = import_node_path5.default.join(store.root, "attachments");
-  import_node_fs7.default.mkdirSync(folder, { recursive: true });
-  const dest = import_node_path5.default.join(folder, id + (mime === "image/png" ? ".png" : ".jpg"));
-  import_node_fs7.default.copyFileSync(file2, dest);
-  import_node_fs7.default.chmodSync(dest, 384);
+  const id = (0, import_node_crypto6.randomUUID)();
+  const folder = import_node_path6.default.join(store.root, "attachments");
+  import_node_fs8.default.mkdirSync(folder, { recursive: true });
+  const dest = import_node_path6.default.join(folder, id + (mime === "image/png" ? ".png" : ".jpg"));
+  import_node_fs8.default.copyFileSync(file2, dest);
+  import_node_fs8.default.chmodSync(dest, 384);
   const a = {
     id,
-    name: name || import_node_path5.default.basename(file2),
+    name: name || import_node_path6.default.basename(file2),
     mime,
     width,
     height,
@@ -21124,10 +21255,37 @@ function register() {
     idle();
     installingUpdate = true;
     try {
-      await updates.download();
-      idle();
-      await updates.openInstaller((file2) => import_electron.shell.openPath(file2));
-      import_electron.app.quit();
+      await installAfterClosingResolve({
+        confirm: async () => {
+          const result = await import_electron.dialog.showMessageBox(window, {
+            type: "question",
+            title: "Install Zeitfield update?",
+            message: "Save your project and quit Resolve to update?",
+            detail: "Zeitfield will download and verify the installer, save your current project, and ask Resolve to quit normally. The installer opens after Resolve and this plugin close. Installation requires an administrator password. Your conversations, keys, and videos are kept.",
+            buttons: ["Cancel", "Save, quit Resolve & update"],
+            defaultId: 0,
+            cancelId: 0,
+            noLink: true
+          });
+          return result.response === 1;
+        },
+        download: () => updates.download(),
+        save: async () => {
+          idle();
+          await resolve.saveForUpdate();
+        },
+        handoff: async () => {
+          let helper;
+          await updates.openInstaller(async (file2) => {
+            helper = await startInstallerHandoff(file2);
+            return "";
+          });
+          return helper;
+        },
+        quitResolve: () => resolve.quitForUpdate(),
+        running: resolveIsRunning,
+        quitPlugin: () => import_electron.app.quit()
+      });
     } finally {
       installingUpdate = false;
     }
@@ -21162,12 +21320,12 @@ function register() {
     return attachments;
   });
   handle("capture", external_exports.undefined(), async () => {
-    const tmp = import_node_path5.default.join(store.root, `capture-${(0, import_node_crypto5.randomUUID)()}.png`);
+    const tmp = import_node_path6.default.join(store.root, `capture-${(0, import_node_crypto6.randomUUID)()}.png`);
     try {
       await resolve.capture(tmp);
       return await addAttachment(tmp, "Current Resolve frame");
     } finally {
-      import_node_fs7.default.rmSync(tmp, { force: true });
+      import_node_fs8.default.rmSync(tmp, { force: true });
     }
   });
   handle(
@@ -21181,11 +21339,11 @@ function register() {
       const c = store.conversation(input2.conversationId);
       input2.attachmentIds.forEach((id) => store.attachment(id));
       c.messages.push({
-        id: (0, import_node_crypto5.randomUUID)(),
+        id: (0, import_node_crypto6.randomUUID)(),
         role: "assistant",
         text: "Your shot is ready to shape. Review the settings, then generate.",
         attachments: [],
-        draft: newDraft((0, import_node_crypto5.randomUUID)(), input2.prompt, input2.attachmentIds),
+        draft: newDraft((0, import_node_crypto6.randomUUID)(), input2.prompt, input2.attachmentIds),
         createdAt: (/* @__PURE__ */ new Date()).toISOString()
       });
       c.updatedAt = (/* @__PURE__ */ new Date()).toISOString();
@@ -21204,7 +21362,7 @@ function register() {
     const c = store.conversation(input2.conversationId);
     const now = (/* @__PURE__ */ new Date()).toISOString();
     c.messages.push({
-      id: (0, import_node_crypto5.randomUUID)(),
+      id: (0, import_node_crypto6.randomUUID)(),
       role: "user",
       text: input2.text.trim(),
       attachments: input2.attachmentIds,
@@ -21215,7 +21373,7 @@ function register() {
     c.updatedAt = now;
     const history = [...c.messages];
     const assistant = {
-      id: (0, import_node_crypto5.randomUUID)(),
+      id: (0, import_node_crypto6.randomUUID)(),
       role: "assistant",
       text: "",
       attachments: [],
@@ -21287,7 +21445,7 @@ function register() {
   });
   handle("reveal", idSchema, (id) => {
     const j = store.job(id);
-    if (j.filePath && import_node_fs7.default.existsSync(j.filePath))
+    if (j.filePath && import_node_fs8.default.existsSync(j.filePath))
       import_electron.shell.showItemInFolder(j.filePath);
   });
   handle(
@@ -21328,7 +21486,7 @@ function register() {
     }),
     (input2) => {
       store.state.presets.push({
-        id: (0, import_node_crypto5.randomUUID)(),
+        id: (0, import_node_crypto6.randomUUID)(),
         title: input2.title,
         prompt: input2.prompt,
         description: "Your saved shot template."
@@ -21351,7 +21509,7 @@ function register() {
 import_electron.app.whenReady().then(async () => {
   store = new Store(
     import_electron.app.getPath("userData"),
-    import_node_path5.default.join(import_node_os.default.homedir(), "Movies", "Zeitfield Studio", "Generated")
+    import_node_path6.default.join(import_node_os.default.homedir(), "Movies", "Zeitfield Studio", "Generated")
   );
   credentials = new Credentials(store.root, import_electron.safeStorage);
   const pluginPackage = external_exports.object({
@@ -21359,13 +21517,13 @@ import_electron.app.whenReady().then(async () => {
     updatesRepository: external_exports.string()
   }).parse(
     JSON.parse(
-      import_node_fs7.default.readFileSync(import_node_path5.default.join(__dirname, "package.json"), "utf8")
+      import_node_fs8.default.readFileSync(import_node_path6.default.join(__dirname, "package.json"), "utf8")
     )
   );
   updates = new Updates(
     pluginPackage.version,
     store.root,
-    fetcher,
+    fetchUpdate,
     pluginPackage.updatesRepository,
     () => notify()
   );
@@ -21379,12 +21537,12 @@ import_electron.app.whenReady().then(async () => {
   let bridge;
   let bridgeLoadError;
   try {
-    bridge = require(import_node_path5.default.join(__dirname, "WorkflowIntegration.node"));
+    bridge = require(import_node_path6.default.join(__dirname, "WorkflowIntegration.node"));
   } catch (error62) {
     bridgeLoadError = error62.message;
   }
-  const diagnostic = (message) => import_node_fs7.default.writeFileSync(
-    import_node_path5.default.join(store.root, "resolve-connection.txt"),
+  const diagnostic = (message) => import_node_fs8.default.writeFileSync(
+    import_node_path6.default.join(store.root, "resolve-connection.txt"),
     `${(/* @__PURE__ */ new Date()).toISOString()} ${message}
 `,
     { mode: 384 }
@@ -21428,7 +21586,7 @@ import_electron.app.whenReady().then(async () => {
     backgroundColor: "#101412",
     title: "Zeitfield Studio",
     webPreferences: {
-      preload: import_node_path5.default.join(__dirname, "preload.cjs"),
+      preload: import_node_path6.default.join(__dirname, "preload.cjs"),
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
@@ -21442,7 +21600,7 @@ import_electron.app.whenReady().then(async () => {
     (_wc, _permission, callback) => callback(false)
   );
   register();
-  await window.loadFile(import_node_path5.default.join(__dirname, "ui/index.html"));
+  await window.loadFile(import_node_path6.default.join(__dirname, "ui/index.html"));
   void updates.check().catch(() => {
   });
   updateTimer = setInterval(
@@ -21451,7 +21609,7 @@ import_electron.app.whenReady().then(async () => {
     6 * 60 * 60 * 1e3
   );
   timer = setInterval(() => {
-    if (!shuttingDown) {
+    if (!shuttingDown && !installingUpdate) {
       void jobs.tick().catch(() => {
       });
       if (Date.now() - lastResolveCheck > 5e3)
